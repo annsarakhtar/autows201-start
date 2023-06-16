@@ -49,6 +49,7 @@ data "aws_ami" "f5_ami" {
 resource "aws_instance" "web" {
   ami           = data.aws_ami.f5_ami.id
   instance_type = "t2.medium"
+  key_name = aws_key_pair.demo.key_name
 
   tags = {
     Name = "F5201"
