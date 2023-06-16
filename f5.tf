@@ -36,11 +36,37 @@ resource "aws_eip" "pub_vip" {
   associate_with_private_ip = "10.0.2.101"
 }
 
-data "aws_ami_ids" "f5" {
-  owners = ["099720109477"]
+data "aws_ami" "f5_ami" {
+  most_recent = true
+  owners = ["679593333241"]
 
   filter {
     name   = "name"
-    values = ["*BIGIP-16.1*PAYG-Best*25Mbps*"]
+    values = ["*BIGIP-16.1.3.4*PAYG-Best*25Mbps*"]
   }
+}
+
+resource "aws_instance" "web" {
+  ami           = data.aws_ami.f5_ami.id
+  instance_type = "t2.medium"
+
+  tags = {
+    Name = "F5201"
+  }
+
+network_interface {
+    network_interface_id = aws_network_interface.mgmt.id
+    device_index         = 0
+}
+
+network_interface {
+    network_interface_id = aws_network_interface.public.id
+    device_index         = 1
+}
+
+network_interface {
+    network_interface_id = aws_network_interface.private.id
+    device_index         = 2
+}
+
 }
