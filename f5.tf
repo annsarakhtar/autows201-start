@@ -35,3 +35,12 @@ resource "aws_eip" "pub_vip" {
   network_interface         = aws_network_interface.public.id
   associate_with_private_ip = "10.0.2.101"
 }
+
+data "aws_ami_ids" "f5" {
+  owners = ["099720109477"]
+
+  filter {
+    name   = "name"
+    values = ["*BIGIP-16.1*PAYG-Best*25Mbps*"]
+  }
+}
